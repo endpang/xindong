@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
+    private  String xxid = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                getRequest("https://maps.cc/girl/android_img.php",1);
+                if(xxid == ""){
+                    getRequest("https://maps.cc/girl/android.php",1);
+                }
             }
         });
 
@@ -60,19 +63,22 @@ public class MainActivity extends AppCompatActivity {
         RequestBody formBody = null;
         String url = null;
         if(stat == 1) {
-            url = "http://kan.msxiaobing.com/Api/ImageAnalyze/Process?service=yanzhi&tid=e0bb5c47b3ce4994a645ba481a4ecf14";
+            url = "http://kan.msxiaobing.com/Api/ImageAnalyze/Process?service=yanzhi&tid=f877a031eac0406abbfc6e2260417fec";
             Gson gson = new Gson();
             Face user = gson.fromJson(json, Face.class);
             Log.i("url",user.getHost() + user.getUrl());
-            formBody =
-                    new FormBody.Builder()
-                            .add("MsgId", String.valueOf(System.currentTimeMillis() * 1000))
-                            .add("CreateTime", String.valueOf(System.currentTimeMillis()))
-                            .add("Content[imageUrl]", user.getHost() + user.getUrl())
-                            .build();
+            formBody = new FormBody.Builder()
+                .add("MsgId", String.valueOf(System.currentTimeMillis() * 1000))
+                .add("CreateTime", String.valueOf(System.currentTimeMillis()))
+                .add("Content[imageUrl]", user.getHost() + user.getUrl())
+                .build();
         }
         if(stat == 2){
             url = "http://kan.msxiaobing.com/Api/Image/UploadBase64";
+            formBody = RequestBody.create(JSON, json);
+        }
+        if(stat ==3 ){
+            url = "https://maps.cc/girl/postcolor.php?xxid="+xxid;
             formBody = RequestBody.create(JSON, json);
         }
         final Request request = new Request.Builder()
@@ -96,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
                         String s =  response.body().string();
                         if(stat == 2){
                             postRequest(s,1);
+                        }
+                        if(stat == 1){
+
+                            Log.i("maps.cc", s);
+                            postRequest(s,3);
+                            xxid = "";
                         }
                         //String re = new String(s.getBytes("UTF-8"), "UTF-8");
                         Log.i("WY","打印POST响应的数据：" + s);
@@ -126,8 +138,12 @@ public class MainActivity extends AppCompatActivity {
                     response = client.newCall(request).execute();
                     if (response.isSuccessful()) {
                         String content= response.body().string();
+                        Log.i("android",content);
                         if(i == 1){
-                            xiaobing(content);
+                            Gson gson = new Gson();
+                            String[] strings = gson.fromJson(content, String[].class);
+                            xxid = strings[0];
+                            xiaobing(strings[1]);
                         }
 
                     } else {
