@@ -138,12 +138,15 @@ public class MainActivity extends AppCompatActivity {
                     response = client.newCall(request).execute();
                     if (response.isSuccessful()) {
                         String content= response.body().string();
-                        Log.i("android",content);
-                        if(i == 1){
+                        Log.i("android","content:" + content);
+                        if(i == 1 && content != ""){
                             Gson gson = new Gson();
                             String[] strings = gson.fromJson(content, String[].class);
-                            xxid = strings[0];
-                            xiaobing(strings[1]);
+                            if(strings.length > 0){
+                                xxid = strings[0];
+                                xiaobing(strings[1]);
+                            }
+
                         }
 
                     } else {
