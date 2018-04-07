@@ -1,6 +1,9 @@
 package com.yibaifen.endler.xindong;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +19,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
+import java.net.URL;
+
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.yibaifen.endler.xindong.model.Face;
 import okhttp3.RequestBody;
 
@@ -27,22 +36,31 @@ public class MainActivity extends AppCompatActivity {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private  String xxid = "";
+    private TextView tv=null;
+    private ImageView iv = null;
+    private Handler handler=null;
+    private String sr = null;
+    private String imgurl = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        handler =new Handler();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                tv=(TextView) findViewById(R.id.t1);
+                iv = (ImageView) findViewById(R.id.i1);
+                //final ImageView iv = (ImageView) findViewById(R.id.i1);
                 if(xxid == ""){
                     getRequest("https://maps.cc/girl/android.php",1);
                 }
+                //tv.setText("hello");
             }
         });
 
@@ -105,9 +123,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if(stat == 1){
 
-                            Log.i("maps.cc", s);
+                            //Log.i("maps.cc", s);
                             postRequest(s,3);
                             xxid = "";
+                        }
+                        if(stat == 3){
+                            Gson gson = new Gson();
+                            String[] strings = gson.fromJson(s, String[].class);
+                            if(strings.length > 0){
+                                if(strings[0].equals("200")){
+                                    sr = strings[1] + ":" + strings[2];
+                                    imgurl = strings[3];
+                                    handler.post(runnableUi);
+                                }
+
+                            }
+
                         }
                         //String re = new String(s.getBytes("UTF-8"), "UTF-8");
                         Log.i("WY","打印POST响应的数据：" + s);
@@ -122,6 +153,26 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
     }
+    Runnable   runnableUi=new  Runnable(){
+        @Override
+        public void run() {
+            //更新界面
+            tv.setText(sr);
+            try{
+                Log.i("imgurl",imgurl);
+                Picasso.get().load(imgurl).into(iv);
+                //URL picUrl = new URL(imgurl);
+                //iv.setImageURI(imgurl);
+                //Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
+                //iv.setImageBitmap(pngBM);
+            }catch (Exception e){
+                Log.i("showimg","没显示出来" + e.toString());
+            }
+
+
+        }
+
+    };
     private void getRequest(String url, final int i) {
 
         final Request request=new Request.Builder()
