@@ -2,6 +2,7 @@ package com.yibaifen.endler.xindong;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -24,10 +25,18 @@ import java.net.URL;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.sina.weibo.sdk.WbSdk;
+import com.sina.weibo.sdk.auth.AccessTokenKeeper;
+import com.sina.weibo.sdk.auth.AuthInfo;
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
+import com.sina.weibo.sdk.auth.WbConnectErrorMessage;
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.picasso.Picasso;
-import com.yibaifen.endler.xindong.model.Face;
+import com.yibaifen.endler.xindong.model.*;
+
 import okhttp3.RequestBody;
 
 
@@ -41,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler=null;
     private String sr = null;
     private String imgurl = null;
+    private SsoHandler mSsoHandler;
+    private Oauth2AccessToken mAccessToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         handler =new Handler();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton login = (FloatingActionButton) findViewById(R.id.login);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,9 +76,54 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //tv.setText("hello");
             }
+
+        });
+        AuthInfo mAuthInfo = new AuthInfo(this, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+        WbSdk.install(this,mAuthInfo);
+        mSsoHandler = new SsoHandler(MainActivity.this);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSsoHandler.authorize(new SelfWbAuthListener());
+            }
         });
 
+        //mAuthInfo = new AuthInfo(this, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+        //WbSdk.install(this,mAuthInfo);
 
+
+    }
+    private class SelfWbAuthListener implements com.sina.weibo.sdk.auth.WbAuthListener{
+        @Override
+        public void onSuccess(final Oauth2AccessToken token) {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAccessToken = token;
+                    Log.i("token",token.toString());
+                    if (mAccessToken.isSessionValid()) {
+                        // 显示 Token
+                        //updateTokenView(false);
+                        Log.i("token","false");
+                        // 保存 Token 到 SharedPreferences
+                        AccessTokenKeeper.writeAccessToken(MainActivity.this, mAccessToken);
+                        Toast.makeText(MainActivity.this,
+                                "success", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void cancel() {
+            Toast.makeText(MainActivity.this,"canceled", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onFailure(WbConnectErrorMessage errorMessage) {
+            Log.i("error",errorMessage.getErrorMessage());
+            Toast.makeText(MainActivity.this, errorMessage.getErrorMessage(), Toast.LENGTH_LONG).show();
+        }
     }
     private void xiaobing(String content){
         Log.i("xiaobing",content);
@@ -231,4 +290,16 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("requestCode:",String.valueOf(requestCode));
+        Log.i("resultCode:",String.valueOf(resultCode));
+        Log.i("data:",data.toString());
+        if (mSsoHandler != null) {
+            mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
+    }
 }
+
+

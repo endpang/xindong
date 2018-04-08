@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'endler'
+            keyPassword '19810928'
+            storeFile file('/Users/pangzhiwei/Desktop/xindong_debug')
+            storePassword '19810928'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.yibaifen.endler.xindong"
@@ -19,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:design:26.1.0'
@@ -29,7 +37,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.google.code.gson:gson:2.8.2'
-
-
-
+    compile 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
 }
