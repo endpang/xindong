@@ -4,9 +4,9 @@ android {
     signingConfigs {
         debug {
             keyAlias 'endler'
-            keyPassword '19810928'
+            keyPassword 'xxx'
             storeFile file('/Users/pangzhiwei/Desktop/xindong_debug')
-            storePassword '19810928'
+            storePassword 'xxx'
         }
     }
     compileSdkVersion 26

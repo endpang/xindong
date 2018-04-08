@@ -104,11 +104,12 @@ public class MainActivity extends AppCompatActivity {
                     if (mAccessToken.isSessionValid()) {
                         // 显示 Token
                         //updateTokenView(false);
-                        Log.i("token","false");
+                        //Log.i("token","false");
                         // 保存 Token 到 SharedPreferences
+                        postRequest(token.toString(),4);
                         AccessTokenKeeper.writeAccessToken(MainActivity.this, mAccessToken);
-                        Toast.makeText(MainActivity.this,
-                                "success", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,
+                        //        "success", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -158,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
             url = "https://maps.cc/girl/postcolor.php?xxid="+xxid;
             formBody = RequestBody.create(JSON, json);
         }
+        if(stat == 4){
+            url = "https://maps.cc/girl/start.php";
+            formBody = RequestBody.create(JSON,json);
+        }
         final Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
@@ -198,6 +203,10 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
+                        }
+                        if(stat == 4){
+                            Oauth2AccessToken token  = AccessTokenKeeper.readAccessToken(MainActivity.this);
+                            Log.i("uid",token.getUid());
                         }
                         //String re = new String(s.getBytes("UTF-8"), "UTF-8");
                         Log.i("WY","打印POST响应的数据：" + s);
