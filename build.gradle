@@ -21,6 +21,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+        maven { url "https://jitpack.io" }
     }
 }
 

@@ -21,6 +21,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import android.util.Log;
 import android.widget.ImageView;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private String imgurl = null;
     private SsoHandler mSsoHandler;
     private Oauth2AccessToken mAccessToken;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,7 +310,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i("data:",data.toString());
         if (mSsoHandler != null) {
             mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+            Intent intent = new Intent(MainActivity.this, ListActivity.class);
+            startActivity(intent);
         }
+
     }
 }
 
