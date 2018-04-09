@@ -1,5 +1,8 @@
 package com.yibaifen.endler.xindong.model;
 
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.yibaifen.endler.xindong.R;
@@ -17,7 +20,8 @@ public class HomeAdapter extends BaseQuickAdapter<HomeItem, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, HomeItem item) {
-        helper.setText(R.id.rv_main_item_title, item.getTitle());
+        helper.setText(R.id.text, item.getTitle());
         //helper.setImageResource(R.id.icon, item.getImageResource());
+        Glide.with(mContext).load(item.getImage()).into((ImageView) helper.getView(R.id.icon));
     }
 }
