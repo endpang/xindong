@@ -7,6 +7,16 @@ package com.yibaifen.endler.xindong.model;
 public class HomeItem {
     private String title;
     private String image;
+    private String ava;
+
+    public String getAva() {
+        return ava;
+    }
+
+    public void setAva(String ava) {
+        this.ava = ava;
+    }
+
     public String getImage() {
         return image;
     }
