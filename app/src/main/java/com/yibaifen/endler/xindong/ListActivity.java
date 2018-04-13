@@ -1,5 +1,6 @@
 package com.yibaifen.endler.xindong;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,7 +58,10 @@ public class ListActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                     Log.d(TAG, "onItemClick: ");
-                    Toast.makeText(ListActivity.this, "onItemClick" + position, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ListActivity.this, "onItemClick" + position, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ListActivity.this, ImageActivity.class);
+                    intent.putExtra("url", imglist.get(position).getUrl());
+                    startActivity(intent);
                 }
             });
 

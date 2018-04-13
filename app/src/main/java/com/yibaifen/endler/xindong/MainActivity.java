@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
         if (mSsoHandler != null) {
             mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
             Intent intent = new Intent(MainActivity.this, ListActivity.class);
+
             startActivity(intent);
         }
 
