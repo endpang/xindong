@@ -48,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private  String xxid = "";
     private TextView tv=null;
     private ImageView iv = null;
+    private ImageView iv2 = null;
     private Handler handler=null;
     private String sr = null;
     private String imgurl = null;
+    private String imgurl2 = null;
     private SsoHandler mSsoHandler;
     private Oauth2AccessToken mAccessToken;
 
@@ -65,17 +67,32 @@ public class MainActivity extends AppCompatActivity {
         handler =new Handler();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         FloatingActionButton login = (FloatingActionButton) findViewById(R.id.login);
+        FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add);
+        tv=(TextView) findViewById(R.id.t1);
+        iv = (ImageView) findViewById(R.id.i1);
+        iv2 = (ImageView) findViewById(R.id.iv2);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "get a new image", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                getRequest("https://maps.cc/girl/api/get.php?xxid="+xxid,5);
+
+            }
+
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "go to xiaobing", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                tv=(TextView) findViewById(R.id.t1);
-                iv = (ImageView) findViewById(R.id.i1);
+//                tv=(TextView) findViewById(R.id.t1);
+//                iv = (ImageView) findViewById(R.id.i1);
                 //final ImageView iv = (ImageView) findViewById(R.id.i1);
-                if(xxid == ""){
-                    getRequest("https://maps.cc/girl/android.php",1);
+                if(!xxid.equals("")){
+                    getRequest("https://maps.cc/girl/api/android.php?xxid="+xxid,1);
                 }
                 //tv.setText("hello");
             }
@@ -159,13 +176,15 @@ public class MainActivity extends AppCompatActivity {
             formBody = RequestBody.create(JSON, json);
         }
         if(stat ==3 ){
-            url = "https://maps.cc/girl/postcolor.php?xxid="+xxid;
+            url = "https://maps.cc/girl/api/postcolor.php?xxid="+xxid;
             formBody = RequestBody.create(JSON, json);
         }
         if(stat == 4){
             url = "https://maps.cc/girl/start.php";
             formBody = RequestBody.create(JSON,json);
         }
+
+
         final Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
@@ -211,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                             Oauth2AccessToken token  = AccessTokenKeeper.readAccessToken(MainActivity.this);
                             Log.i("uid",token.getUid());
                         }
+
                         //String re = new String(s.getBytes("UTF-8"), "UTF-8");
                         Log.i("WY","打印POST响应的数据：" + s);
 
@@ -232,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
             try{
                 Log.i("imgurl",imgurl);
                 Picasso.get().load(imgurl).into(iv);
+                Picasso.get().load(imgurl2).into(iv2);
                 //URL picUrl = new URL(imgurl);
                 //iv.setImageURI(imgurl);
                 //Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
@@ -270,6 +291,21 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         }
+                        if(i == 5){
+                            Gson gson = new Gson();
+                            String[] strings = gson.fromJson(content, String[].class);
+                            if(strings.length > 0){
+                                if(strings[0].equals("200")){
+                                    Log.i("code:","200");
+                                    sr = strings[1] + ":" + strings[2];
+                                    imgurl = strings[5];
+                                    imgurl2 = strings[3];
+                                    handler.post(runnableUi);
+                                    xxid = strings[4];
+                                }
+
+                            }
+                        }
 
                     } else {
                         throw new IOException("Unexpected code " + response);
@@ -296,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.login) {
             return true;
         }
 

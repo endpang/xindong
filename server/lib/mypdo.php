@@ -107,15 +107,14 @@ class mypdo{
                 }
 
         }
-        public function getlist($keyname,$keyvalue,$page = 1 ,$num = 20){
-                $sql = "select * from `".$this->table."` where `".$keyname."` = ?  order by id desc limit ?,?";
+        public function getlist($where,$page = 1 ,$num = 20){
+                $sql = "select * from `".$this->table."` where  ".$where."  order by id desc limit ?,?";
                 
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->bindValue(1,$keyvalue);
-                $stmt->bindValue(2, $num * ($page -1), PDO::PARAM_INT);
-                $stmt->bindValue(3, $num, PDO::PARAM_INT);
-
-                $stmt->execute($res_array);
+                //$stmt->bindValue(1,$keyvalue);
+                $stmt->bindValue(1, $num * ($page -1), PDO::PARAM_INT);
+                $stmt->bindValue(2, $num, PDO::PARAM_INT);
+                $stmt->execute();
                 //print_R($stmt->errorInfo());
                 return $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }

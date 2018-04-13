@@ -6,8 +6,7 @@ include_once( 'lib/mypdo.php');
 
 $girl = new mypdo("girl_new");
 
-$list = $girl->getlist("state",0,1,100);
-
+$list = $girl->getlist(" `state` = 0 and `colour` > 79 ",1,100);
 $wb_list = array_unique(array_column($list, 'wb_id'));
 $user_list = array_unique(array_column($list,'uid'));
 
