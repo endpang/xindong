@@ -15,7 +15,7 @@ public class Image {
     private String url;
     private int face;
     private int colour;
-    private int by;
+    private Long by;
     private String datatime;
     private Long wb_id;
     private Long uid;
@@ -77,11 +77,11 @@ public class Image {
         this.colour = colour;
     }
 
-    public int getBy() {
+    public long getBy() {
         return by;
     }
 
-    public void setBy(int by) {
+    public void setBy(long by) {
         this.by = by;
     }
 

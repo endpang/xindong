@@ -114,6 +114,8 @@ class mypdo{
                 //$stmt->bindValue(1,$keyvalue);
                 $stmt->bindValue(1, $num * ($page -1), PDO::PARAM_INT);
                 $stmt->bindValue(2, $num, PDO::PARAM_INT);
+                file_put_contents("/web/maps.cc/public/girl/log/mylist.log" ,$num."|".$page.PHP_EOL,FILE_APPEND);
+
                 $stmt->execute();
                 //print_R($stmt->errorInfo());
                 return $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

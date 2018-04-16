@@ -6,7 +6,13 @@ include_once( 'lib/mypdo.php');
 
 $girl = new mypdo("girl_new");
 
-$list = $girl->getlist(" `state` = 0 and `colour` > 79 ",1,100);
+$page = $_GET["page"];
+if($page < 1 ){
+    $page = 1;
+}
+file_put_contents("/web/maps.cc/public/girl/log/mylist.log" ,json_encode($_GET).PHP_EOL,FILE_APPEND);
+
+$list = $girl->getlist(" `state` = 0 and `colour` > 79 ",$page,10);
 $wb_list = array_unique(array_column($list, 'wb_id'));
 $user_list = array_unique(array_column($list,'uid'));
 

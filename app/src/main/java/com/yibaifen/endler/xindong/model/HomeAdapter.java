@@ -24,5 +24,7 @@ public class HomeAdapter extends BaseQuickAdapter<HomeItem, BaseViewHolder> {
         //helper.setImageResource(R.id.icon, item.getImageResource());
         Glide.with(mContext).load(item.getImage()).into((ImageView) helper.getView(R.id.icon));
         Glide.with(mContext).load(item.getAva()).into((ImageView) helper.getView(R.id.ava));
+
+
     }
 }

@@ -4,16 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yibaifen.endler.xindong.ImageActivity">
+    android:background="@android:color/black"
+    tools:context="com.yibaifen.endler.xindong.ImageActivity"
+    android:configChanges="orientation|keyboardHidden|screenSize"
+    android:screenOrientation="portrait">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/black"
             android:orientation="vertical">
+
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/black"
+                ads:adSize="SMART_BANNER"
+                ads:adUnitId="ca-app-pub-3189177796348267/6258039099"/>
 
             <ImageView
                 android:id="@+id/iv"
@@ -24,7 +39,29 @@
                 android:src="@mipmap/ic_launcher"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp" />
+
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/black"
+                ads:adSize="SMART_BANNER"
+                ads:adUnitId="ca-app-pub-3189177796348267/3154552975"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/del"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:backgroundTint="@android:color/background_light"
+                app:layout_anchor="@+id/include"
+                app:layout_anchorGravity="bottom|center"
+                app:srcCompat="@android:drawable/ic_delete" />
         </LinearLayout>
+
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

@@ -10,14 +10,13 @@
 include_once( 'lib/mypdo.php');
 $pdo = new PDO('mysql:host=127.0.0.1;dbname=maps;port=3306','root','');
 $pdo->exec('set names utf8');
-
-if($_GET["xxid"] != ""){
+file_put_contents("/web/maps.cc/public/girl/log/get.log",json_encode($_GET).PHP_EOL,FILE_APPEND);
+if(!empty($_GET["xxid"]) && $_GET["xxid"] != "null"){
     $girl = new mypdo("girl_new");
     $update = [
         'state' => 1,
     ];
     $girl->IorU($update,"xxid",$_GET["xxid"]);
-
 }
 
 $sql = "select * from `girl_new` where  colour = 0 and `state` = 0 order by id limit 1";
