@@ -6,8 +6,8 @@ from sklearn.externals import joblib
 
 
 # 特征和对应的分数路径
-features_path = './data/features_ALL.txt'
-ratings_path = './data/ratings.txt'
+features_path = './data/all.txt'
+ratings_path = './data/rate.txt'
 
 # 载入数据
 # 共500组数据
@@ -29,7 +29,7 @@ features_train = pca.transform(features_train)
 features_test = pca.transform(features_test)
 regr = RandomForestRegressor(n_estimators=50, max_depth=None, min_samples_split=10, random_state=0)
 regr = regr.fit(features_train, ratings_train)
-joblib.dump(regr, './model/face_rating.pkl', compress=1)
+joblib.dump(regr, './model/face_rating_new.pkl', compress=1)
 
 # 训练完之后提示训练结束
 print('Generate Model Successfully!')

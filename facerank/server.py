@@ -179,16 +179,27 @@ def do_find():
     resp = urllib.request.urlopen(w)
     image = np.asarray(bytearray(resp.read()),dtype="uint8")
     image = cv2.imdecode(image,cv2.IMREAD_COLOR)
+
     arrs,faces = fetch_face_pic(image,predictor)
-    print(arrs)
-    my_features = generateAllFeatures(arrs)
+    print("arrs:",arrs)
+    if len(arrs) < 1:
+        return ""
+    if len(arrs) == 1:
+        my_features = generateAllFeatures(arrs[0])
+    else:
+        my_features = generateAllFeatures(arrs)
     if len(my_features.shape) > 1:
         predictions = predict(my_features,)
         print(faces)
         print(predictions)
         # print(type(predictions))
+        print(type(faces))
+        a2 = np.array([1,2])
+        if type(faces) == type(a2):
+            print("is")
+            faces = faces.tolist()
         result =[
-            faces.tolist(),predictions
+            faces,predictions,image.shape
         ]
     #print(image)
     print(faces)

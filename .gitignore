@@ -60,3 +60,5 @@ freeline_project_description.json
 */.idea/
 .idea/
 
+*/build.gradle
+config.php
