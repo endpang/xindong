@@ -11,6 +11,7 @@ import bottle
 from bottle import request
 import urllib.request
 import json
+from wide_resnet import WideResNet
 
 
 def facialRatio(points):
@@ -95,8 +96,35 @@ def generateAllFeatures(allLandmarkCoordinates):
 
 def fetch_face_pic(face,predictor):
     rects = detector(face, 1)
-    #str = ""
-    #strs = ""
+    img_h, img_w, _ = np.shape(face)
+    faces = np.empty((len(rects), img_size, img_size, 3))
+    detected = rects
+    img = face
+    lables = []
+    if len(detected) > 0:
+        for i, d in enumerate(detected):
+            x1, y1, x2, y2, w, h = d.left(), d.top(), d.right() + 1, d.bottom() + 1, d.width(), d.height()
+            xw1 = max(int(x1 - 0.4 * w), 0)
+            yw1 = max(int(y1 - 0.4 * h), 0)
+            xw2 = min(int(x2 + 0.4 * w), img_w - 1)
+            yw2 = min(int(y2 + 0.4 * h), img_h - 1)
+            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 2)
+            # cv2.rectangle(img, (xw1, yw1), (xw2, yw2), (255, 0, 0), 2)
+            faces[i, :, :, :] = cv2.resize(img[yw1:yw2 + 1, xw1:xw2 + 1, :], (img_size, img_size))
+
+        # predict ages and genders of the detected faces
+        results = model.predict(faces)
+        predicted_genders = results[0]
+        ages = np.arange(0, 101).reshape(101, 1)
+        predicted_ages = results[1].dot(ages).flatten()
+
+        # draw results
+        for i, d in enumerate(detected):
+            label = [predicted_ages[i],
+                                    "F" if predicted_genders[i][0] > 0.5 else "M"]
+            #print(label)
+            lables.append(label)
+            #draw_label(img, (d.left(), d.top()), label)
     arrs = []
     face_arr = []
     for faces in range(len(rects)):
@@ -129,7 +157,7 @@ def fetch_face_pic(face,predictor):
             face_arr = a
         else:
             face_arr = np.concatenate((face_arr,a) ,axis=0)
-    return arrs,face_arr
+    return arrs,face_arr,lables
 
 def predict(my_features):
     predictions = []
@@ -171,6 +199,10 @@ features = np.loadtxt('./data/features_ALL.txt', delimiter=',')
 pca = decomposition.PCA(n_components=20)
 pca.fit(features)
 
+weight_file = "./model/weights.18-4.06.hdf5"
+img_size = 64
+model = WideResNet(img_size, depth=16, k=8)()
+model.load_weights(weight_file)
 
 @bottle.route('/find', method='GET')
 def do_find():
@@ -180,7 +212,7 @@ def do_find():
     image = np.asarray(bytearray(resp.read()),dtype="uint8")
     image = cv2.imdecode(image,cv2.IMREAD_COLOR)
 
-    arrs,faces = fetch_face_pic(image,predictor)
+    arrs,faces,lables = fetch_face_pic(image,predictor)
     print("arrs:",arrs)
     if len(arrs) < 1:
         return ""
@@ -199,7 +231,7 @@ def do_find():
             print("is")
             faces = faces.tolist()
         result =[
-            faces,predictions,image.shape
+            faces,predictions,image.shape,lables
         ]
     #print(image)
     print(faces)

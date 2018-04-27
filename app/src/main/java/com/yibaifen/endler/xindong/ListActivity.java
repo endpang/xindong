@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,7 +70,9 @@ public class ListActivity extends AppCompatActivity {
         handler =new Handler();
         getRequest("https://maps.cc/girl/api/mylist.php?page="+page,1);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv1);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         easyRefreshLayout = (EasyRefreshLayout) findViewById(R.id.easylayout);
         easyRefreshLayout.setLoadMoreModel(LoadModel.NONE);
@@ -107,7 +110,8 @@ public class ListActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-
+            mRecyclerView.setLayoutManager(new
+                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             hMyAdapter = new HomeAdapter(R.layout.rv_main_item,hinitData(imglist));
             hMyAdapter.openLoadAnimation();
             hMyAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -146,7 +150,7 @@ public class ListActivity extends AppCompatActivity {
         for(int i = 0;i < images.size(); i ++){
             Image img = images.get(i);
             HomeItem hi = new HomeItem();
-            hi.setTitle(img.getColour() + "分 by @"+ img.getUser().getScreen_name());
+            hi.setTitle(img.getColour() + "分\n@"+ img.getUser().getScreen_name());
             hi.setImage(img.getUrl());
             hi.setAva(img.getImage());
             mDataList.add(hi);

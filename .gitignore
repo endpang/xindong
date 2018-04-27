@@ -62,3 +62,4 @@ freeline_project_description.json
 
 */build.gradle
 config.php
+*.hdf5
